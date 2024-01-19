@@ -8,6 +8,8 @@ namespace ConsoleApp1C_
 {
     internal class Program
     {
+        public static double BelowAverageBMI = 18.5;
+        public static double AboveAverageBMI = 24.9;
         static void Main()
         {
             BMI();
@@ -35,9 +37,9 @@ namespace ConsoleApp1C_
 
         static string GetBMICategory(double bmi)
         {
-            if (bmi < 18.5)
-                return "below average";
-            else if (bmi >= 18.5 && bmi < 24.9)
+            if (bmi < BelowAverageBMI)
+                return "Below average";
+            else if (bmi >= BelowAverageBMI && bmi < AboveAverageBMI)
                 return "Average";
             else
                 return "Above average";
