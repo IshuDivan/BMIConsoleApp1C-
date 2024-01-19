@@ -10,6 +10,10 @@ namespace ConsoleApp1C_
     {
         static void Main()
         {
+            BMI();
+        }
+        static void BMI()
+        {
             Console.WriteLine("Enter your weight in kilograms:");
             double weight = double.Parse(Console.ReadLine());
 
@@ -21,6 +25,7 @@ namespace ConsoleApp1C_
 
             Console.WriteLine($"IBM = {bmi:F2} - {bmiCategory}");
             Console.ReadLine();
+
         }
 
         static double CalculateBMI(double weight, double height)
