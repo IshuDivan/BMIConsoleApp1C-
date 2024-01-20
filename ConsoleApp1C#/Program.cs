@@ -4,22 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ConsoleApp1C_
 {
     internal class Program
     {
-        public class measurement
+        public class Measurement
         {
             public string title;
-            public Dictionary<string, double> units;
+            public Dictionary<string, double> scalingUnits;
         }
-        public static measurement[] parameters =
+        public static Measurement[] Parameters =
         {
-            new measurement
+            new Measurement
             {
                 title = "height",
-                units = new Dictionary<string, double>()
+                scalingUnits = new Dictionary<string, double>()
                 {
                     { "meters" , 1},
                     { "cantimeters" , 0.01},
@@ -29,10 +30,10 @@ namespace ConsoleApp1C_
                 }
 
             },
-            new measurement
+            new Measurement
             {
                 title = "weight",
-                units = new Dictionary<string, double>()
+                scalingUnits = new Dictionary<string, double>()
                 {
                     { "kilograms" , 1},
                     { "grams" , 0.001},
@@ -43,49 +44,65 @@ namespace ConsoleApp1C_
             }
         };
         public static double belowAverageBMI = 18.5;
-        public static double aboveAverageBMI = 24.9;
+        public static double aboveAverageBMI = 25;
         static void Main()
         {
             BMICategory();
         }
         static void BMICategory()
         {
-            double height = getUnit("height");
-            double weight = getUnit("weight");
+            double height = GetUnit("height");
+            double weight = GetUnit("weight");
             double bmi = CalculateBMI(weight, height);
             string bmiCategory = GetBMICategory(bmi);
 
-            Console.WriteLine($"IBM = {bmi:F2} - {bmiCategory}");
+            Console.WriteLine($"IBM = {bmi:F3} - {bmiCategory}");
             Console.ReadLine();
 
         }
-        static double getUnit(string title)
+        static double GetUnit(string title)
         {
-            string units = setunits(title);
-            double value = getMeasurements(title, units);
-            value = NormaliseValue(value, title, units);
+            string scalingUnits = SetscalingUnits(title);
+            double value = GetMeasurements(title, scalingUnits);
+            value = NormaliseValue(value, title, scalingUnits);
             return value;
         }
-        static string setunits(string title)
+        static string SetscalingUnits(string title)
         {
             int number = 0;
-            for (int j = 0;j< parameters.Length; j++)
+            for (int j = 0;j< Parameters.Length; j++)
             {
-                if (parameters[j].title == title)
+                if (Parameters[j].title == title)
                 {
                     number = j;
                 }
             }
-            Console.WriteLine($"Enter units of {parameters[number].title} in which you are going to operate:");
+            Console.WriteLine($"Enter units of {Parameters[number].title} in which you are going to operate:");
             int i = 1;
-            foreach (KeyValuePair<string, double> entry in parameters[number].units)
+            foreach (KeyValuePair<string, double> entry in Parameters[number].scalingUnits)
             {
                 Console.WriteLine($"To use {entry.Key} type {i}");
                 i++;
             }
-            int id = int.Parse(Console.ReadLine());
+            int id;
+            while (true)
+            {
+                string input = Console.ReadLine();
+                if (!int.TryParse(input, out id))
+                {
+                    Console.WriteLine("invalid input. Couldn't find a number in your input. Try again");
+                }
+                else if (id <= 0.0 | id > Parameters[number].scalingUnits.Count)
+                {
+                    Console.WriteLine($"invalid input, only enter one of the numbers on the list. Try again");
+                }
+                else
+                {
+                    break;
+                }
+            }
             i = 1;
-            foreach (KeyValuePair<string, double> entry in parameters[number].units)
+            foreach (KeyValuePair<string, double> entry in Parameters[number].scalingUnits)
             {
                 if (i == id)
                 {
@@ -95,13 +112,13 @@ namespace ConsoleApp1C_
             }
             return null;
         }
-        static double getMeasurements(string name, string units)
+        static double GetMeasurements(string name, string scalingUnits)
         {
             string input;
             double output;
             while (true)
             {
-                Console.WriteLine($"Enter your {name} in {units}:");
+                Console.WriteLine($"Enter your {name} in {scalingUnits}:");
                 input = Console.ReadLine();
                 if (!double.TryParse(input, out output))
                 {
@@ -117,17 +134,17 @@ namespace ConsoleApp1C_
                 }
             }
         }
-        static double NormaliseValue(double value, string valueTitle, string fromUnits)
+        static double NormaliseValue(double value, string valueTitle, string fromScalingUnitsUnits)
         {
             int number = 0;
-            for (int j = 0; j < parameters.Length; j++)
+            for (int j = 0; j < Parameters.Length; j++)
             {
-                if (parameters[j].title == valueTitle)
+                if (Parameters[j].title == valueTitle)
                 {
                     number = j;
                 }
             }
-            return value * parameters[number].units[fromUnits];
+            return value * Parameters[number].scalingUnits[fromScalingUnitsUnits];
 
         }
         static double CalculateBMI(double weight, double height)
