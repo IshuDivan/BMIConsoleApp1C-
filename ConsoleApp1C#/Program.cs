@@ -60,19 +60,6 @@ namespace ConsoleApp1C_
             new UnitOfMeasurement { name = "grams", transitionValue = 0.001 },
             new UnitOfMeasurement { name = "pounds", transitionValue = 0.0254 }
         };
-        public static UnitOfMeasurement[,] Units =
-        {
-            {
-            new UnitOfMeasurement { name = "meters", transitionValue = 1 },
-            new UnitOfMeasurement { name = "cantimeters", transitionValue = 0.01 },
-            new UnitOfMeasurement { name = "inches", transitionValue = 0.0254 }
-            },
-            {
-            new UnitOfMeasurement { name = "kilograms", transitionValue = 1 },
-            new UnitOfMeasurement { name = "grams", transitionValue = 0.001 },
-            new UnitOfMeasurement { name = "pounds", transitionValue = 0.0254 }
-            }
-        };
         public class unit
         {
             public string measurementTitle;
@@ -80,19 +67,12 @@ namespace ConsoleApp1C_
         }
         static void Main()
         {
-            var units = new Dictionary<string, double>()
-            {
-                { "meters" , 1},
-                { "cantimeters" , 0.01},
-                { "inches" , 0.0254},
-
-            };
             BMICategory();
         }
         static void BMICategory()
         {
-            string weightUnits = setWeightUnits();
-            string heightUnits = setHeightUnits();
+            string weightUnits = setunits(1);
+            string heightUnits = setunits(0);
             double weight = getMeasurements("Weight", weightUnits);
             double height = getMeasurements("Height", heightUnits);
 
@@ -106,21 +86,26 @@ namespace ConsoleApp1C_
             Console.ReadLine();
 
         }
-        static string setHeightUnits()
+        static string setunits(int number)
         {
-            Console.WriteLine($"Enter units of height in which you are going to operate:");
-            for (int i = 0; i < lengthUnits.Length; i++)
-                Console.WriteLine($"To use {lengthUnits[i].name} type {i + 1}");
-            string units = lengthUnits[int.Parse(Console.ReadLine()) - 1].name;
-            return units;
-        }
-        static string setWeightUnits()
-        {
-            Console.WriteLine($"Enter units of height in which you are going to operate:");
-            for (int i = 0; i < weightUnits.Length; i++)
-                Console.WriteLine($"To use {weightUnits[i].name} type {i + 1}");
-            string units = weightUnits[int.Parse(Console.ReadLine()) - 1].name;
-            return units;
+            Console.WriteLine($"Enter units of {parameters[number].title} in which you are going to operate:");
+            int i = 1;
+            foreach (KeyValuePair<string, double> entry in parameters[number].units)
+            {
+                Console.WriteLine($"To use {entry.Key} type {i}");
+                i++;
+            }
+            int id = int.Parse(Console.ReadLine());
+            i = 1;
+            foreach (KeyValuePair<string, double> entry in parameters[number].units)
+            {
+                if (i == id)
+                {
+                    return entry.Key;
+                }
+                i++;
+            }
+            return null;
         }
         static double getMeasurements(string name, string units)
         {
