@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace ConsoleApp1C_
 {
@@ -26,7 +21,7 @@ namespace ConsoleApp1C_
                     {"meters", 1},
                     {"centimeters", 0.01},
                     {"inches", 0.0254},
-                    {"feet", 0.31},
+                    {"feet", 0.3048},
                 }
             },
             new Measurement
