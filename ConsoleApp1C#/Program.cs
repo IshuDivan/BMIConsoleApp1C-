@@ -9,11 +9,6 @@ namespace ConsoleApp1C_
 {
     internal class Program
     {
-        public class UnitOfMeasurement
-        {
-            public string name;
-            public double transitionValue;
-        }
         public class measurement
         {
             public string title;
@@ -29,6 +24,7 @@ namespace ConsoleApp1C_
                     { "meters" , 1},
                     { "cantimeters" , 0.01},
                     { "inches" , 0.0254},
+                    { "feet" , 0.31},
 
                 }
 
@@ -40,7 +36,7 @@ namespace ConsoleApp1C_
                 {
                     { "kilograms" , 1},
                     { "grams" , 0.001},
-                    { "pounds" , 0.0254},
+                    { "pounds" , 0.4536},
 
                 }
 
@@ -48,43 +44,27 @@ namespace ConsoleApp1C_
         };
         public static double belowAverageBMI = 18.5;
         public static double aboveAverageBMI = 24.9;
-        public static UnitOfMeasurement[] lengthUnits = 
-        {
-            new UnitOfMeasurement { name = "meters", transitionValue = 1 },
-            new UnitOfMeasurement { name = "cantimeters", transitionValue = 0.01 },
-            new UnitOfMeasurement { name = "inches", transitionValue = 0.0254 }
-        };
-        public static UnitOfMeasurement[] weightUnits = 
-        {
-            new UnitOfMeasurement { name = "kilograms", transitionValue = 1 },
-            new UnitOfMeasurement { name = "grams", transitionValue = 0.001 },
-            new UnitOfMeasurement { name = "pounds", transitionValue = 0.0254 }
-        };
-        public class unit
-        {
-            public string measurementTitle;
-            public UnitOfMeasurement[] list;
-        }
         static void Main()
         {
             BMICategory();
         }
         static void BMICategory()
         {
-            string weightUnits = setunits("weight");
-            string heightUnits = setunits("height");
-            double weight = getMeasurements("Weight", weightUnits);
-            double height = getMeasurements("Height", heightUnits);
-
-            height = NormaliseValue(height, "height", heightUnits);
-            weight = NormaliseWeight(weight, weightUnits);
-
+            double height = getUnit("height");
+            double weight = getUnit("weight");
             double bmi = CalculateBMI(weight, height);
             string bmiCategory = GetBMICategory(bmi);
 
             Console.WriteLine($"IBM = {bmi:F2} - {bmiCategory}");
             Console.ReadLine();
 
+        }
+        static double getUnit(string title)
+        {
+            string units = setunits(title);
+            double value = getMeasurements(title, units);
+            value = NormaliseValue(value, title, units);
+            return value;
         }
         static string setunits(string title)
         {
@@ -137,10 +117,6 @@ namespace ConsoleApp1C_
                 }
             }
         }
-        static double CalculateBMI(double weight, double height)
-        {
-            return weight / (height * height);
-        }
         static double NormaliseValue(double value, string valueTitle, string fromUnits)
         {
             int number = 0;
@@ -154,27 +130,9 @@ namespace ConsoleApp1C_
             return value * parameters[number].units[fromUnits];
 
         }
-        static double NormaliseHeight(double value, string fromUnits, string toUnits = "meters")
+        static double CalculateBMI(double weight, double height)
         {
-            for (int i = 0; i < lengthUnits.Length; i++)
-            {
-                if (fromUnits == lengthUnits[i].name & toUnits == "meters")
-                {
-                    return value * lengthUnits[i].transitionValue;
-                }
-            }
-            return value;
-        }
-        static double NormaliseWeight(double value, string fromUnits, string toUnits = "meters")
-        {
-            for (int i = 0; i < weightUnits.Length; i++)
-            {
-                if (fromUnits == weightUnits[i].name & toUnits == "meters")
-                {
-                    return value * weightUnits[i].transitionValue;
-                }
-            }
-            return value;
+            return weight / (height * height);
         }
 
         static string GetBMICategory(double bmi)
