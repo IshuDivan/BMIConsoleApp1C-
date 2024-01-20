@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,21 +14,79 @@ namespace ConsoleApp1C_
             public string name;
             public double transitionValue;
         }
+        public class measurement
+        {
+            public string title;
+            public Dictionary<string, double> units;
+        }
+        public static measurement[] parameters =
+        {
+            new measurement
+            {
+                title = "height",
+                units = new Dictionary<string, double>()
+                {
+                    { "meters" , 1},
+                    { "cantimeters" , 0.01},
+                    { "inches" , 0.0254},
 
+                }
+
+            },
+            new measurement
+            {
+                title = "weight",
+                units = new Dictionary<string, double>()
+                {
+                    { "kilograms" , 1},
+                    { "grams" , 0.001},
+                    { "pounds" , 0.0254},
+
+                }
+
+            }
+        };
         public static double belowAverageBMI = 18.5;
         public static double aboveAverageBMI = 24.9;
-        public static UnitOfMeasurement[] lengthUnits = {
+        public static UnitOfMeasurement[] lengthUnits = 
+        {
             new UnitOfMeasurement { name = "meters", transitionValue = 1 },
             new UnitOfMeasurement { name = "cantimeters", transitionValue = 0.01 },
             new UnitOfMeasurement { name = "inches", transitionValue = 0.0254 }
         };
-        public static UnitOfMeasurement[] weightUnits = {
+        public static UnitOfMeasurement[] weightUnits = 
+        {
             new UnitOfMeasurement { name = "kilograms", transitionValue = 1 },
             new UnitOfMeasurement { name = "grams", transitionValue = 0.001 },
             new UnitOfMeasurement { name = "pounds", transitionValue = 0.0254 }
         };
+        public static UnitOfMeasurement[,] Units =
+        {
+            {
+            new UnitOfMeasurement { name = "meters", transitionValue = 1 },
+            new UnitOfMeasurement { name = "cantimeters", transitionValue = 0.01 },
+            new UnitOfMeasurement { name = "inches", transitionValue = 0.0254 }
+            },
+            {
+            new UnitOfMeasurement { name = "kilograms", transitionValue = 1 },
+            new UnitOfMeasurement { name = "grams", transitionValue = 0.001 },
+            new UnitOfMeasurement { name = "pounds", transitionValue = 0.0254 }
+            }
+        };
+        public class unit
+        {
+            public string measurementTitle;
+            public UnitOfMeasurement[] list;
+        }
         static void Main()
         {
+            var units = new Dictionary<string, double>()
+            {
+                { "meters" , 1},
+                { "cantimeters" , 0.01},
+                { "inches" , 0.0254},
+
+            };
             BMICategory();
         }
         static void BMICategory()
