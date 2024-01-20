@@ -8,19 +8,34 @@ namespace ConsoleApp1C_
 {
     internal class Program
     {
-        public static double BelowAverageBMI = 18.5;
-        public static double AboveAverageBMI = 24.9;
+        public class UnitOfMeasurement
+        {
+            public string name;
+            public double transitionValue;
+        }
+
+        public static double belowAverageBMI = 18.5;
+        public static double aboveAverageBMI = 24.9;
+        public static UnitOfMeasurement[] lengthUnits = {  
+            new UnitOfMeasurement { name = "meters", transitionValue = 1 },
+            new UnitOfMeasurement { name = "cantimeters", transitionValue = 0.01 },
+            new UnitOfMeasurement { name = "inches", transitionValue = 0.0254 } 
+        };
+        public static UnitOfMeasurement[] weightUnits = {   
+            new UnitOfMeasurement { name = "kilograms", transitionValue = 1 },
+            new UnitOfMeasurement { name = "grams", transitionValue = 0.001 },
+            new UnitOfMeasurement { name = "pounds", transitionValue = 0.0254 } 
+        };
         static void Main()
         {
-            BMI();
+            BMICategory();
         }
-        static void BMI()
+        static void BMICategory()
         {
-            Console.WriteLine("Enter your weight in kilograms:");
-            double weight = double.Parse(Console.ReadLine());
+            double weight = getMeasurements("Weight", "kilograms");
+            double height = getMeasurements("Height", "cantimeters");
 
-            Console.WriteLine("Enter your height in cantimeters:");
-            double height = double.Parse(Console.ReadLine());
+            height = NormaliseHeight(height, "cantimeters");
 
             double bmi = CalculateBMI(weight, height);
             string bmiCategory = GetBMICategory(bmi);
@@ -29,17 +44,49 @@ namespace ConsoleApp1C_
             Console.ReadLine();
 
         }
-
+        static double getMeasurements(string name, string units)
+        {
+            string input;
+            double output;
+            while (true)
+            {
+                Console.WriteLine($"Enter your {name} in {units}:");
+                input = Console.ReadLine();
+                if (!double.TryParse(input, out output))
+                {
+                    Console.WriteLine("invalid input. Couldn't find a number in your input. Try again");
+                }
+                else if (output <= 0.0)
+                {
+                    Console.WriteLine($"invalid input, {name} can only be measured to be a positive number. Try again");
+                }
+                else
+                {
+                    return output;
+                }
+            }
+        }
         static double CalculateBMI(double weight, double height)
         {
-            return weight / (height * height/(100*100));
+            return weight / (height * height);
+        }
+        static double NormaliseHeight(double value, string fromUnits, string toUnits = "meters")
+        {
+            for (int i =0; i< lengthUnits.Length;i++)
+            {
+                if (fromUnits == lengthUnits[i].name & toUnits == "meters")
+                {
+                    return value * lengthUnits[i].transitionValue;
+                }
+            }
+            return value;
         }
 
         static string GetBMICategory(double bmi)
         {
-            if (bmi < BelowAverageBMI)
+            if (bmi < belowAverageBMI)
                 return "Below average";
-            else if (bmi >= BelowAverageBMI && bmi < AboveAverageBMI)
+            else if (bmi >= belowAverageBMI && bmi < aboveAverageBMI)
                 return "Average";
             else
                 return "Above average";
