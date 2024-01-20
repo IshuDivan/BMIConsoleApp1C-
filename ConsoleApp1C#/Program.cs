@@ -16,15 +16,15 @@ namespace ConsoleApp1C_
 
         public static double belowAverageBMI = 18.5;
         public static double aboveAverageBMI = 24.9;
-        public static UnitOfMeasurement[] lengthUnits = {  
+        public static UnitOfMeasurement[] lengthUnits = {
             new UnitOfMeasurement { name = "meters", transitionValue = 1 },
             new UnitOfMeasurement { name = "cantimeters", transitionValue = 0.01 },
-            new UnitOfMeasurement { name = "inches", transitionValue = 0.0254 } 
+            new UnitOfMeasurement { name = "inches", transitionValue = 0.0254 }
         };
-        public static UnitOfMeasurement[] weightUnits = {   
+        public static UnitOfMeasurement[] weightUnits = {
             new UnitOfMeasurement { name = "kilograms", transitionValue = 1 },
             new UnitOfMeasurement { name = "grams", transitionValue = 0.001 },
-            new UnitOfMeasurement { name = "pounds", transitionValue = 0.0254 } 
+            new UnitOfMeasurement { name = "pounds", transitionValue = 0.0254 }
         };
         static void Main()
         {
@@ -32,10 +32,13 @@ namespace ConsoleApp1C_
         }
         static void BMICategory()
         {
-            double weight = getMeasurements("Weight", "kilograms");
-            double height = getMeasurements("Height", "cantimeters");
+            string weightUnits = setWeightUnits();
+            string heightUnits = setHeightUnits();
+            double weight = getMeasurements("Weight", weightUnits);
+            double height = getMeasurements("Height", heightUnits);
 
-            height = NormaliseHeight(height, "cantimeters");
+            height = NormaliseHeight(height, heightUnits);
+            weight = NormaliseWeight(weight, weightUnits);
 
             double bmi = CalculateBMI(weight, height);
             string bmiCategory = GetBMICategory(bmi);
@@ -43,6 +46,22 @@ namespace ConsoleApp1C_
             Console.WriteLine($"IBM = {bmi:F2} - {bmiCategory}");
             Console.ReadLine();
 
+        }
+        static string setHeightUnits()
+        {
+            Console.WriteLine($"Enter units of height in which you are going to operate:");
+            for (int i = 0; i < lengthUnits.Length; i++)
+                Console.WriteLine($"To use {lengthUnits[i].name} type {i + 1}");
+            string units = lengthUnits[int.Parse(Console.ReadLine()) - 1].name;
+            return units;
+        }
+        static string setWeightUnits()
+        {
+            Console.WriteLine($"Enter units of height in which you are going to operate:");
+            for (int i = 0; i < weightUnits.Length; i++)
+                Console.WriteLine($"To use {weightUnits[i].name} type {i + 1}");
+            string units = weightUnits[int.Parse(Console.ReadLine()) - 1].name;
+            return units;
         }
         static double getMeasurements(string name, string units)
         {
@@ -72,11 +91,22 @@ namespace ConsoleApp1C_
         }
         static double NormaliseHeight(double value, string fromUnits, string toUnits = "meters")
         {
-            for (int i =0; i< lengthUnits.Length;i++)
+            for (int i = 0; i < lengthUnits.Length; i++)
             {
                 if (fromUnits == lengthUnits[i].name & toUnits == "meters")
                 {
                     return value * lengthUnits[i].transitionValue;
+                }
+            }
+            return value;
+        }
+        static double NormaliseWeight(double value, string fromUnits, string toUnits = "meters")
+        {
+            for (int i = 0; i < weightUnits.Length; i++)
+            {
+                if (fromUnits == weightUnits[i].name & toUnits == "meters")
+                {
+                    return value * weightUnits[i].transitionValue;
                 }
             }
             return value;
