@@ -71,12 +71,12 @@ namespace ConsoleApp1C_
         }
         static void BMICategory()
         {
-            string weightUnits = setunits(1);
-            string heightUnits = setunits(0);
+            string weightUnits = setunits("weight");
+            string heightUnits = setunits("height");
             double weight = getMeasurements("Weight", weightUnits);
             double height = getMeasurements("Height", heightUnits);
 
-            height = NormaliseHeight(height, heightUnits);
+            height = NormaliseValue(height, "height", heightUnits);
             weight = NormaliseWeight(weight, weightUnits);
 
             double bmi = CalculateBMI(weight, height);
@@ -86,8 +86,16 @@ namespace ConsoleApp1C_
             Console.ReadLine();
 
         }
-        static string setunits(int number)
+        static string setunits(string title)
         {
+            int number = 0;
+            for (int j = 0;j< parameters.Length; j++)
+            {
+                if (parameters[j].title == title)
+                {
+                    number = j;
+                }
+            }
             Console.WriteLine($"Enter units of {parameters[number].title} in which you are going to operate:");
             int i = 1;
             foreach (KeyValuePair<string, double> entry in parameters[number].units)
@@ -132,6 +140,19 @@ namespace ConsoleApp1C_
         static double CalculateBMI(double weight, double height)
         {
             return weight / (height * height);
+        }
+        static double NormaliseValue(double value, string valueTitle, string fromUnits)
+        {
+            int number = 0;
+            for (int j = 0; j < parameters.Length; j++)
+            {
+                if (parameters[j].title == valueTitle)
+                {
+                    number = j;
+                }
+            }
+            return value * parameters[number].units[fromUnits];
+
         }
         static double NormaliseHeight(double value, string fromUnits, string toUnits = "meters")
         {
