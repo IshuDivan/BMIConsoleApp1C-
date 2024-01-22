@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ConsoleApp1C_
 {
@@ -8,7 +13,7 @@ namespace ConsoleApp1C_
         public class Measurement
         {
             public string Title { get; set; }
-            public Dictionary<string, double> ScalingUnits { get; set; }
+            public Dictionary<string, Func<double, double>> ScalingUnits { get; set; }
         }
 
         public static Measurement[] Parameters =
@@ -16,22 +21,32 @@ namespace ConsoleApp1C_
             new Measurement
             {
                 Title = "height",
-                ScalingUnits = new Dictionary<string, double>
+                ScalingUnits = new Dictionary<string, Func<double, double>>
                 {
-                    {"meters", 1},
-                    {"centimeters", 0.01},
-                    {"inches", 0.0254},
-                    {"feet", 0.3048},
+                    {"meters", value => value},
+                    {"centimeters", value => value * 0.01},
+                    {"inches", value => value * 0.0254},
+                    {"feet", value => value * 0.3048},
                 }
             },
             new Measurement
             {
                 Title = "weight",
-                ScalingUnits = new Dictionary<string, double>
+                ScalingUnits = new Dictionary<string, Func<double, double>>
                 {
-                    {"kilograms", 1},
-                    {"grams", 0.001},
-                    {"pounds", 0.4536},
+                    {"kilograms", value => value},
+                    {"grams", value => value * 0.001},
+                    {"pounds", value => value * 0.4536},
+                }
+            },
+            new Measurement
+            {
+                Title = "temperature",
+                ScalingUnits = new Dictionary<string, Func<double, double>>
+                {
+                    {"Celsius", value => value},
+                    {"Kelvin", value => value - 273.15},
+                    {"Fahrenheit", value => (value - 32) * 5 / 9},
                 }
             }
         };
@@ -45,6 +60,8 @@ namespace ConsoleApp1C_
         {
             double height = GetUnit("height");
             double weight = GetUnit("weight");
+            //double temperature = GetUnit("temperature");
+            //Console.WriteLine(temperature.ToString());
             double bmi = CalculateBMI(weight, height);
             string bmiCategory = GetBMICategory(bmi);
 
@@ -62,7 +79,7 @@ namespace ConsoleApp1C_
         static string SetScalingUnits(string Title)
         {
             int number = 0;
-            for (int j = 0;j< Parameters.Length; j++)
+            for (int j = 0; j < Parameters.Length; j++)
             {
                 if (Parameters[j].Title == Title)
                 {
@@ -71,7 +88,7 @@ namespace ConsoleApp1C_
             }
             Console.WriteLine($"Enter units of {Parameters[number].Title} in which you are going to operate:");
             int i = 1;
-            foreach (KeyValuePair<string, double> entry in Parameters[number].ScalingUnits)
+            foreach (KeyValuePair<string, Func<double, double>> entry in Parameters[number].ScalingUnits)
             {
                 Console.WriteLine($"To use {entry.Key} type {i}");
                 i++;
@@ -94,7 +111,7 @@ namespace ConsoleApp1C_
                 }
             }
             i = 1;
-            foreach (KeyValuePair<string, double> entry in Parameters[number].ScalingUnits)
+            foreach (KeyValuePair<string, Func<double, double>> entry in Parameters[number].ScalingUnits)
             {
                 if (i == id)
                 {
@@ -128,7 +145,7 @@ namespace ConsoleApp1C_
         }
         private static double NormalizeValue(double value, string title, string scalingUnit)
         {
-            return value * Parameters[Array.FindIndex(Parameters, p => p.Title == title)].ScalingUnits[scalingUnit];
+            return Parameters[Array.FindIndex(Parameters, p => p.Title == title)].ScalingUnits[scalingUnit](value);
         }
         static double CalculateBMI(double weight, double height)
         {
@@ -146,6 +163,4 @@ namespace ConsoleApp1C_
         }
     }
 };
-
-        
 
